@@ -3,6 +3,23 @@
   <head>
     <script src="dygraph/dygraph.js"></script>
     <link rel="stylesheet" href="dygraph/dygraph.css" />
+    
+    <style>
+      .dygraph-legend {
+        background-color: rgba(255, 255, 255, 0.85) !important;
+        padding: 2px;
+        border: 0.5px solid #000;
+        border-radius: 4px;
+        box-shadow: 2px 2px 2px #888;
+        pointer-events: none;
+        width: 110px;
+      }
+      
+      pre {
+        margin-top: 30px;
+      }
+    
+    </style>
   </head>
   <body>
     <div id="graph"></div>
@@ -11,11 +28,17 @@
         document.getElementById("graph"),
         "https://raw.githubusercontent.com/martinrotter/home-temp-server/master/sample-data.csv",
         {
-          legend: 'always',
+          // Základní věci.
+          title: "Teplota",
+          legend: "always",
           animatedZooms: true,
           drawPoints: true,
-          title: 'Teplota',
           
+          // Zobrazit jen poslední 4 dny.
+          dateWindow: [ new Date(new Date() - 96*60*60*1000),
+                        new Date() ],
+          
+          // Podvýběr X-ové osy.
           showRangeSelector: true,
           rangeSelectorHeight: 30,
           rangeSelectorPlotFillColor: 'MediumSlateBlue',
@@ -23,6 +46,7 @@
           colorValue: 0.9,
           fillAlpha: 0.4,
           
+          // Zvýraznění víkendů.
           underlayCallback: function(canvas, area, g) {
             canvas.fillStyle = "rgba(255, 255, 102, 1.0)";
 

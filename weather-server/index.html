@@ -31,7 +31,7 @@
           // Základní věci.
           title: "Temperature",
           legend: "always",
-          animatedZooms: true,
+          animatedZooms: false,
           labelsSeparateLines: true,
           drawPoints: true,
           
@@ -41,11 +41,35 @@
           
           // Podvýběr X-ové osy.
           showRangeSelector: true,
-          rangeSelectorHeight: 30,
+          rangeSelectorHeight: 40,
           rangeSelectorPlotFillColor: 'MediumSlateBlue',
           rangeSelectorPlotFillGradientColor: 'rgba(123, 104, 238, 0)',
           colorValue: 0.9,
           fillAlpha: 0.4,
+          
+          series : {
+            'Temp': { axis: 'y' },
+            'Humidity': { axis: 'y2' }
+          },
+          
+          axes: {
+            y: {
+              valueFormatter: function(v) {
+                return v + ' °C';
+              },
+              axisLabelFormatter: function(v) {
+                return v + ' °C';
+              }
+            },
+            y2: {
+              valueFormatter: function(v) {
+                return Math.round(v, 1) + '%';
+              },
+              axisLabelFormatter: function(v) {
+                return Math.round(v, 1) + '%';
+              }
+            },
+          },
           
           // Zvýraznění víkendů.
           underlayCallback: function(canvas, area, g) {

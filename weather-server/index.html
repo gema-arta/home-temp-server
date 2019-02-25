@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <script src="dygraph/dygraph.js"></script>
+    <link rel="stylesheet" href="dygraph/dygraph.css" />
+  </head>
+  <body>
+    <!-- You may set style: "width: ...; height: ..." to size the chart -->
+    <div id="graph"></div>
+    
+    <script>
+      g = new Dygraph(
+        document.getElementById("graph"),
+        "localhost/sample-data.csv",
+        {
+          // options go here. See http://dygraphs.com/options.html
+          legend: 'always',
+          animatedZooms: true,
+          title: 'Teplota'
+        });
+    </script>
+  </body>
+</html>

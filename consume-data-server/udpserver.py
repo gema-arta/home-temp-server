@@ -1,8 +1,8 @@
 ## python udpserver.py <data_output.csv> <udp_port>
 ## run as:
-##    python udpserver.py "../sample-data.csv" 12345
+##    python udpserver.py "../weather-server/data/sample-data.csv" 12345
 ##    or with year placeholder which will create file-per-year
-##    python udpserver.py "../sample-data-%year%.csv" 12345
+##    python udpserver.py "../weather-server/data/sample-data-%year%.csv" 12345
 ##
 ## send sample UDP packet.
 ##
@@ -52,4 +52,4 @@ for data in udp_server():
     log.debug("Appending to %r.\n" % (real_file))
     
     with open(real_file, "a") as myfile:
-        myfile.write(formatted_data + '\n')
+        myfile.write(formatted_data + "\r\n")

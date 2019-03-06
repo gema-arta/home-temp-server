@@ -5,3 +5,6 @@ Description=IOT website
 Type=simple
 WorkingDirectory=/opt/home-temp-server/weather-server
 ExecStart=python3 -m http.server 3388
+
+[Install]
+WantedBy=multi-user.target

@@ -4,4 +4,4 @@ Description=IOT PC data gather
 [Service]
 Type=forking
 WorkingDirectory=/opt/home-temp-server/pc-info-server
-ExecStart=python3 pcserver.py '../weather-server/data/pc-data-%time%.csv' &
+ExecStart=python3 pcserver.py '../weather-server/data/pc-data-TIME.csv' &

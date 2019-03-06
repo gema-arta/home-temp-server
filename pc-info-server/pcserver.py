@@ -37,4 +37,4 @@ while True:
   with open(real_file, "a") as myfile:
     myfile.write(formatted_data + "\r\n")
   
-  time.sleep(5)
+  time.sleep(60)

@@ -1,32 +1,51 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
+    <script src="jquery/jquery-3.3.1.slim.min.js"></script>
+    <script src="popper/popper.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    
     <script src="dygraph/dygraph.js"></script>
     <link rel="stylesheet" href="dygraph/dygraph.css" />
     
-    <style>
-      .dygraph-legend {
-        background-color: rgba(255, 255, 255, 0.85) !important;
-        padding: 2px;
-        border: 0.5px solid #000;
-        border-radius: 4px;
-        box-shadow: 2px 2px 2px #888;
-        pointer-events: none;
-        width: 110px;
-      }
-      
-      pre {
-        margin-top: 30px;
-      }
-    
-    </style>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div id="graph"></div>
+    <div id="graph_server"></div>
     <script>
       g = new Dygraph(
-        document.getElementById("graph"),
+        document.getElementById("graph_server"),
+        "http://localhost:3210/data/sample-data.csv",
+        {
+          // Základní věci.
+          title: "Server (Arch Linux)",
+          legend: "always",
+          animatedZooms: false,
+          labelsSeparateLines: true,
+          drawPoints: true,
+          
+          // Zobrazit jen poslední 4 dny.
+          dateWindow: [ new Date(new Date() - 4*24*60*60*1000),
+                        new Date() ],
+          
+          // Podvýběr X-ové osy.
+          showRangeSelector: true,
+          rangeSelectorHeight: 40,
+          rangeSelectorPlotFillColor: 'MediumSlateBlue',
+          rangeSelectorPlotFillGradientColor: 'rgba(123, 104, 238, 0)',
+          colorValue: 0.9,
+          fillAlpha: 0.4
+        });
+    </script>
+    
+    <div id="graph_test"></div>
+    <script>
+      g = new Dygraph(
+        document.getElementById("graph_test"),
         "http://localhost:3210/data/sample-data.csv",
         {
           // Základní věci.
@@ -37,7 +56,7 @@
           drawPoints: true,
           
           // Zobrazit jen poslední 4 dny.
-          dateWindow: [ new Date(new Date() - 96*60*60*1000),
+          dateWindow: [ new Date(new Date() - 4*24*60*60*1000),
                         new Date() ],
           
           // Podvýběr X-ové osy.
@@ -64,10 +83,10 @@
             },
             y2: {
               valueFormatter: function(v) {
-                return Math.round(v, 1) + '%';
+                return Math.round(v, 1) + ' %';
               },
               axisLabelFormatter: function(v) {
-                return Math.round(v, 1) + '%';
+                return Math.round(v, 1) + ' %';
               }
             },
           },
@@ -75,21 +94,21 @@
           // Zvýraznění víkendů.
           underlayCallback: function(canvas, area, g) {
             canvas.fillStyle = "rgba(255, 255, 102, 1.0)";
-
+      
             function highlight_period(x_start, x_end) {
               var canvas_left_x = g.toDomXCoord(x_start);
               var canvas_right_x = g.toDomXCoord(x_end);
               var canvas_width = canvas_right_x - canvas_left_x;
               canvas.fillRect(canvas_left_x, area.y, canvas_width, area.h);
             }
-
+      
             var min_data_x = g.getValue(0,0);
             var max_data_x = g.getValue(g.numRows()-1,0);
-
+      
             // get day of week
             var d = new Date(min_data_x);
             var dow = d.getUTCDay();
-
+      
             var w = min_data_x;
             // starting on Sunday is a special case
             if (dow === 0) {

@@ -1,6 +1,6 @@
 ## python pcserver.py <data_output.csv>
 ## run as:
-##    python pcserver.py "../weather-server/data/pc-data-%time%.csv"
+##    python pcserver.py "../weather-server/data/pc-data-TIME.csv"
 
 import logging
 import sys
@@ -15,9 +15,9 @@ log = logging.getLogger("temp_server")
 format_cons = "%(asctime)s %(name)-12s %(levelname)8s\t%(message)s"
 logging.basicConfig(level = logging.DEBUG, format = format_cons)
 
-# Note that placeholder %time% is replaced with current
+# Note that placeholder TIME is replaced with current
 # "year-month" (for example "2018-07") for each request.
-time_placeholder = "%time%"
+time_placeholder = "TIME"
 data_file_mask = os.getcwd() + '/' + sys.argv[1]
 csv_header = "DateTime,CpuTemp,MemoryPerc"
 

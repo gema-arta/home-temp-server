@@ -28,8 +28,8 @@
           labelsSeparateLines: true,
           drawPoints: true,
           
-          // Zobrazit jen poslední 4 dny.
-          dateWindow: [ new Date(new Date() - 4*24*60*60*1000),
+          // Zobrazit jen poslední hodinu.
+          dateWindow: [ new Date(new Date() - 60*60*1000),
                         new Date() ],
           
           // Podvýběr X-ové osy.
@@ -38,7 +38,31 @@
           rangeSelectorPlotFillColor: 'MediumSlateBlue',
           rangeSelectorPlotFillGradientColor: 'rgba(123, 104, 238, 0)',
           colorValue: 0.9,
-          fillAlpha: 0.4
+          fillAlpha: 0.4,
+          
+          series : {
+            'CPU temp': { axis: 'y' },
+            'RAM taken': { axis: 'y2' }
+          },
+          
+          axes: {
+            y: {
+              valueFormatter: function(v) {
+                return v + ' °C';
+              },
+              axisLabelFormatter: function(v) {
+                return v + ' °C';
+              }
+            },
+            y2: {
+              valueFormatter: function(v) {
+                return Math.round(v, 1) + ' %';
+              },
+              axisLabelFormatter: function(v) {
+                return Math.round(v, 1) + ' %';
+              }
+            },
+          },
         });
     </script>
     

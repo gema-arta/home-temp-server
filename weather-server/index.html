@@ -26,11 +26,12 @@
         {
           // Základní věci.
           title: "Server (Arch Linux)",
-          //labels: [ 'Time', 'CPU temp', 'RAM taken' ],
           legend: "always",
-          animatedZooms: false,
           labelsSeparateLines: true,
           drawPoints: true,
+          axisLineColor: "gray",
+          //stepPlot: true,
+          fillGraph: true,
           
           // Zobrazit jen poslední hodinu.
           dateWindow: [ new Date(new Date() - 60*60*1000),

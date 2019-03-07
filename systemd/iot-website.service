@@ -4,7 +4,7 @@ Description=IOT website
 [Service]
 Type=simple
 WorkingDirectory=/opt/home-temp-server/weather-server
-ExecStart=python3 -m http.server 3388
+ExecStart=twist3 web -n --listen tcp:3388 --path "/opt/home-temp-server/weather-server"
 
 [Install]
 WantedBy=multi-user.target

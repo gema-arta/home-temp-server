@@ -16,7 +16,7 @@
 #define SERIAL_BAUD 115200
 #define UDP_PORT 33666
 #define SENSORD_ID "sens_test"
-#define SLEEP_SEC 5
+#define SLEEP_SEC 30
 
 // Globals.
 WiFiUDP Udp;
@@ -55,10 +55,15 @@ void setup() {
   
     Serial.println(buffer);
     
-    Udp.beginPacket(server_ip, 33666);
+    Udp.beginPacket(server_ip, UDP_PORT);
     Udp.write(buffer, used_buf);
     int res = Udp.endPacket();
 
+    yield();
+
+    // Make sure the stuff is sent.
+    delay(100);
+    
     Serial.println(res);
   }
 

@@ -17,6 +17,7 @@
 #define UDP_PORT 33666
 #define SENSORD_ID "sens_test"
 #define SLEEP_SEC 30
+#define MAX_CONNECT_TRIES 100
 
 // Globals.
 WiFiUDP Udp;
@@ -29,8 +30,16 @@ void setup() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(STASSID, STAPSK);
 
+  int coonect_tries = MAX_CONNECT_TRIES;
+
   // Wait while connecting to network.
   while (WiFi.status() != WL_CONNECTED) {
+    if (coonect_tries-- <= 0) {
+      Serial.println("Connection to Wi-Fi failed!!!");
+      ESP.deepSleep(SLEEP_SEC * 1e6);
+      return;
+    }
+    
     Serial.print('.');
     delay(50);
   }

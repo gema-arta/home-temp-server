@@ -39,6 +39,9 @@ void setup() {
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
+  dht.begin();
+  //delay(100);
+
   // Read sensor data.
   while (true) {
     float h = dht.readHumidity();

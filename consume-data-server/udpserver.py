@@ -43,13 +43,8 @@ def udp_server(host = "0.0.0.0", port = server_port):
 for data in udp_server():   
     log.debug("Received data %r." % (data))
     
-    # Format received data and append to correct CSV file.
-    #dat_now = datetime.datetime.now()
-    #real_file = data_file_mask.replace(year_placeholder, str(dat_now.year))
-    #formatted_data = "%s,%s" % (dat_now.strftime('%Y-%m-%dT%H:%M'), data)
-    #
-    #log.debug("Formatted data is %r." % (formatted_data))
-    #log.debug("Appending to %r.\n" % (real_file))
-    #
-    #with open(real_file, "a") as myfile:
-    #    myfile.write(formatted_data + "\r\n")
+    tokns = data.decode("ascii").split(";")
+    formatted_data = "influx -database 'home_data' -execute 'INSERT sensors,sensor_id={} temp={},humidity={}'".format(tokns[0], tokns[1], tokns[2])
+
+    print(formatted_data)
+    os.system(formatted_data)

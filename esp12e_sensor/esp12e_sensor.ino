@@ -16,7 +16,7 @@
 #define SERIAL_BAUD 115200
 #define UDP_PORT 33666
 #define SENSORD_ID "sens_test"
-#define DELAY_LOOP 10000
+#define SLEEP_SEC 60
 
 // Globals.
 WiFiUDP Udp;
@@ -40,36 +40,7 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   dht.begin();
-  //delay(100);
 
-  // Read sensor data.
-  while (true) {
-    float h = dht.readHumidity();
-    float t = dht.readTemperature();
-  
-    // Check if any reads failed and exit early (to try again).
-    if (isnan(h) || isnan(t)) {
-      Serial.println(F("Failed to read from DHT sensor!"));
-      delay(200);
-    }
-    else {
-      char buffer [50];
-      int used_buf = sprintf(buffer, "%s;%.2f;%.2f", SENSORD_ID, t, h);
-    
-      Serial.println(buffer);
-      
-      Udp.beginPacket(server_ip, UDP_PORT);
-      Udp.write(buffer, used_buf);
-      Udp.endPacket();
-      break;
-    }
-  }
-
-  ESP.deepSleep(15 * 1e6);
-}
-
-void loop() {
-  /*
   // Read sensor data.
   float h = dht.readHumidity();
   float t = dht.readTemperature();
@@ -88,7 +59,10 @@ void loop() {
     Udp.write(buffer, used_buf);
     Udp.endPacket();
   }
-  
-  delay(DELAY_LOOP);
-  */
+
+  ESP.deepSleep(SLEEP_SEC * 1e6);
+}
+
+void loop() {
+}
 }

@@ -16,7 +16,7 @@
 #define SERIAL_BAUD 115200
 #define UDP_PORT 33666
 #define SENSORD_ID "sens_test"
-#define SLEEP_SEC 60
+#define SLEEP_SEC 5
 
 // Globals.
 WiFiUDP Udp;
@@ -55,9 +55,11 @@ void setup() {
   
     Serial.println(buffer);
     
-    Udp.beginPacket(server_ip, UDP_PORT);
+    Udp.beginPacket(server_ip, 33666);
     Udp.write(buffer, used_buf);
-    Udp.endPacket();
+    int res = Udp.endPacket();
+
+    Serial.println(res);
   }
 
   ESP.deepSleep(SLEEP_SEC * 1e6);

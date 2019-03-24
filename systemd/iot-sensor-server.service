@@ -1,0 +1,10 @@
+[Unit]
+Description=IOT sensor server
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/home-temp-server/consume-data-server
+ExecStart=python3 udpserver.py 33666
+
+[Install]
+WantedBy=multi-user.target

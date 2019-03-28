@@ -1,12 +1,7 @@
-#include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include <DHT.h>
 
-// Wi-Fi credentials.
-#ifndef STASSID
-#define STASSID "u_pasovcu"
-#define STAPSK  "pasovec1"
-#endif
+#include "wifitools.h"
 
 // Used DHT-11 on GPIO13 (D7)
 #define DHTPIN 13
@@ -14,70 +9,63 @@
 
 // Misc defines.
 #define SERIAL_BAUD 115200
-#define UDP_PORT 33666
+#define SERVER_IP 192, 168, 0, 150
+#define SERVER_PORT 33666
 #define SENSORD_ID "sens_test"
-#define SLEEP_SEC 30
-#define MAX_CONNECT_TRIES 100
+#define SLEEP_SEC 5
 
 // Globals.
-WiFiUDP Udp;
-DHT dht(DHTPIN, DHTTYPE);
-IPAddress server_ip(192, 168, 0, 150);
+void setup()
+{
+  DHT dht(DHTPIN, DHTTYPE);
 
-void setup() {
   Serial.begin(SERIAL_BAUD);
-  
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(STASSID, STAPSK);
 
-  int coonect_tries = MAX_CONNECT_TRIES;
-
-  // Wait while connecting to network.
-  while (WiFi.status() != WL_CONNECTED) {
-    if (coonect_tries-- <= 0) {
-      Serial.println("Connection to Wi-Fi failed!!!");
-      ESP.deepSleep(SLEEP_SEC * 1e6);
-      return;
-    }
-    
-    Serial.print('.');
-    delay(50);
-  }
-
-  Serial.println("Connected to Wi-Fi!");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
-
+  // Turn on and initialize sensor.
   dht.begin();
 
-  // Read sensor data.
-  float h = dht.readHumidity();
-  float t = dht.readTemperature();
+  bool connected_wifi = connectToWifi();
 
-  // Check if any reads failed and exit early (to try again).
-  if (isnan(h) || isnan(t)) {
-    Serial.println(F("Failed to read from DHT sensor!"));
+  if (connected_wifi)
+  {
+    // Read sensor data.
+    float h = dht.readHumidity();
+    float t = dht.readTemperature();
+
+    // Check if any reads failed and exit early (to try again).
+    if (isnan(h) || isnan(t))
+    {
+      Serial.println(F("Failed to read from DHT sensor!"));
+    }
+    else
+    {
+      char buffer[32];
+      int used_buf = sprintf(buffer, "%s;%.2f;%.2f", SENSORD_ID, t, h);
+
+      Serial.printf("Data for sending to server is: '%s'\n", buffer);
+
+      // Send da shit.
+      WiFiUDP Udp;
+      Udp.beginPacket(IPAddress(SERVER_IP), SERVER_PORT);
+      Udp.write(buffer, used_buf);
+      bool res = Udp.endPacket();
+
+      if (res) {
+        Serial.println(F("Data sent to server successfully."));
+        yield();
+        // Make sure the stuff is sent.
+        delay(100);
+      }
+      else {
+        Serial.println(F("Error, NO data sent to server!"));
+      }
+    }
   }
-  else {
-    char buffer [50];
-    int used_buf = sprintf(buffer, "%s;%.2f;%.2f", SENSORD_ID, t, h);
-  
-    Serial.println(buffer);
-    
-    Udp.beginPacket(server_ip, UDP_PORT);
-    Udp.write(buffer, used_buf);
-    int res = Udp.endPacket();
 
-    yield();
-
-    // Make sure the stuff is sent.
-    delay(100);
-    
-    Serial.println(res);
-  }
-
+  // Turn off sensor and deep sleep.
   ESP.deepSleep(SLEEP_SEC * 1e6);
 }
 
-void loop() {
+void loop()
+{
 }

@@ -11,10 +11,9 @@
 #define SERIAL_BAUD 115200
 #define SERVER_IP 192, 168, 0, 150
 #define SERVER_PORT 33666
-#define SENSORD_ID "sens_test"
+#define SENSOR_ID "sens_test"
 #define SLEEP_SEC 5
 
-// Globals.
 void setup()
 {
   DHT dht(DHTPIN, DHTTYPE);
@@ -40,7 +39,7 @@ void setup()
     else
     {
       char buffer[32];
-      int used_buf = sprintf(buffer, "%s;%.2f;%.2f", SENSORD_ID, t, h);
+      int used_buf = sprintf(buffer, "%s;%.2f;%.2f", SENSOR_ID, t, h);
 
       Serial.printf("Data for sending to server is: '%s'\n", buffer);
 
@@ -48,12 +47,12 @@ void setup()
       WiFiUDP Udp;
       Udp.beginPacket(IPAddress(SERVER_IP), SERVER_PORT);
       Udp.write(buffer, used_buf);
-      bool res = Udp.endPacket();
 
-      if (res) {
+      if (Udp.endPacket()) {
         Serial.println(F("Data sent to server successfully."));
-        yield();
+
         // Make sure the stuff is sent.
+        yield();
         delay(100);
       }
       else {

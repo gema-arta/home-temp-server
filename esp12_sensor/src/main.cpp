@@ -4,7 +4,8 @@
 #include "wifitools.h"
 
 // Used DHT-11 on GPIO13 (D7)
-#define DHTPIN 13
+#define DHTPIN_DATA D7
+#define DHTPIN_PWR D1   // Other GPIOs did not work well for me.
 #define DHTTYPE DHT11
 
 // Misc defines.
@@ -12,25 +13,40 @@
 #define SERVER_IP 192, 168, 0, 150
 #define SERVER_PORT 33666
 #define SENSORD_ID "sens_test"
-#define SLEEP_SEC 5
+#define SLEEP_SEC 10
+#define SEC_TO_STABILIZE 1.5
 
 // Globals.
 void setup()
 {
-  DHT dht(DHTPIN, DHTTYPE);
+  // Setup DHT power GPIO pin and turn power on.
+  pinMode(DHTPIN_PWR, OUTPUT);
+  digitalWrite(DHTPIN_PWR, HIGH);
 
+  DHT dht(DHTPIN_DATA, DHTTYPE);
   Serial.begin(SERIAL_BAUD);
 
-  // Turn on and initialize sensor.
-  dht.begin();
-
-  bool connected_wifi = connectToWifi();
+  double seconds_to_join;
+  bool connected_wifi = connectToWifi(&seconds_to_join);
+  double additional_wait = SEC_TO_STABILIZE - seconds_to_join;
 
   if (connected_wifi)
   {
+    // Wait for sensor to stabilize.
+    if (additional_wait > 0.0) {
+      Serial.printf("Additionally waiting for %f seconds.\n", additional_wait);
+      delay(additional_wait * 1000.0);
+    }
+
+    // Turn on and initialize sensor.
+    dht.begin();
+
     // Read sensor data.
     float h = dht.readHumidity();
     float t = dht.readTemperature();
+
+    // Turn off power to sensor.
+    digitalWrite(DHTPIN_PWR, LOW);
 
     // Check if any reads failed and exit early (to try again).
     if (isnan(h) || isnan(t))
@@ -61,6 +77,8 @@ void setup()
       }
     }
   }
+
+  digitalWrite(DHTPIN_PWR, LOW);
 
   // Turn off sensor and deep sleep.
   ESP.deepSleep(SLEEP_SEC * 1e6);

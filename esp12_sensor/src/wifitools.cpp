@@ -11,7 +11,7 @@
 
 #include "wifitools.h"
 
-bool connectToWifi()
+bool connectToWifi(double* seconds_to_join)
 {
   auto time_start = std::chrono::system_clock::now();
 
@@ -36,8 +36,10 @@ bool connectToWifi()
   auto time_end = std::chrono::system_clock::now();
   std::chrono::duration<double> elapsed_seconds = time_end - time_start;
 
+  *seconds_to_join = elapsed_seconds.count();
+
   Serial.printf("\nConnected to Wi-Fi! Established in %f seconds. IP address: '%s'\n",
-                elapsed_seconds.count(),
+                *seconds_to_join,
                 WiFi.localIP().toString().c_str());
   return true;
 }

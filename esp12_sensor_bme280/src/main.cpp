@@ -1,29 +1,37 @@
 #include <WiFiUdp.h>
-#include <DHT.h>
+#include <Wire.h>
+#include <SPI.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME280.h>
 
 #include "wifitools.h"
 
-// Used DHT-11 on GPIO13 (D7)
-#define DHTPIN_DATA D7
-#define DHTPIN_PWR D1   // Other GPIOs did not work well for me.
-#define DHTTYPE DHT11
+// Data pins for BME280.
+#define D1 5
+#define D2 4
+#define D3 0
+#define D4 2
+
+#define BME_SCK D1
+#define BME_MISO D4
+#define BME_MOSI D2
+#define BME_CS D3
+
+#define SEALEVELPRESSURE_HPA (1013.25)
 
 // Misc defines.
 #define SERIAL_BAUD 115200
 #define SERVER_IP 192, 168, 0, 150
 #define SERVER_PORT 33666
 
-#define SENSORD_ID "sens_test"
+#define SENSOR_ID "sens_test"
 #define SLEEP_SEC 10
-#define SEC_TO_STABILIZE 1.5
+#define SEC_TO_STABILIZE 1.0
+
+Adafruit_BME280 bme(BME_CS, BME_MOSI, BME_MISO, BME_SCK);
 
 void setup()
 {
-  // Setup DHT power GPIO pin and turn power on.
-  pinMode(DHTPIN_PWR, OUTPUT);
-  digitalWrite(DHTPIN_PWR, HIGH);
-
-  DHT dht(DHTPIN_DATA, DHTTYPE);
   Serial.begin(SERIAL_BAUD);
 
   double seconds_to_join;
@@ -39,19 +47,22 @@ void setup()
     }
 
     // Turn on and initialize sensor.
-    dht.begin();
+    bme.begin();
+    
+    float t = bme.readTemperature();
+    float h = bme.readHumidity();
 
-    // Read sensor data.
-    float h = dht.readHumidity();
-    float t = dht.readTemperature();
+    /*
+    Serial.print("Pressure = ");
 
-    // Turn off power to sensor.
-    digitalWrite(DHTPIN_PWR, LOW);
+    Serial.print(bme.readPressure() / 100.0F);
+    Serial.println(" hPa");
+    */
 
     // Check if any reads failed and exit early (to try again).
     if (isnan(h) || isnan(t))
     {
-      Serial.println(F("Failed to read from DHT sensor!"));
+      Serial.println(F("Failed to read from sensor!"));
     }
     else
     {
@@ -77,8 +88,6 @@ void setup()
       }
     }
   }
-
-  digitalWrite(DHTPIN_PWR, LOW);
 
   // Turn off sensor and deep sleep.
   ESP.deepSleep(SLEEP_SEC * 1e6);

@@ -1,7 +1,7 @@
 // Wi-Fi credentials.
 #ifndef STASSID
-#define STASSID "u_pasovcu"
-#define STAPSK "pasovec1"
+#define STASSID "Rotterovi"
+#define STAPSK "bertopes"
 #endif
 
 #define MAX_CONNECT_TRIES 500

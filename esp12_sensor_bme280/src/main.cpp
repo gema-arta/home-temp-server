@@ -21,12 +21,12 @@
 
 // Misc defines.
 #define SERIAL_BAUD 115200
-#define SERVER_IP 192, 168, 0, 150
+#define SERVER_IP 192, 168, 44, 150
 #define SERVER_PORT 33666
-
-#define SENSOR_ID "sens_test"
 #define SLEEP_SEC 10
 #define SEC_TO_STABILIZE 1.0
+
+#define SENSOR_ID "sens_test"
 
 Adafruit_BME280 bme(BME_CS, BME_MOSI, BME_MISO, BME_SCK);
 
@@ -52,13 +52,6 @@ void setup()
     float t = bme.readTemperature();
     float h = bme.readHumidity();
 
-    /*
-    Serial.print("Pressure = ");
-
-    Serial.print(bme.readPressure() / 100.0F);
-    Serial.println(" hPa");
-    */
-
     // Check if any reads failed and exit early (to try again).
     if (isnan(h) || isnan(t))
     {
@@ -81,7 +74,7 @@ void setup()
 
         // Make sure the stuff is sent.
         yield();
-        delay(100);
+        delay(800);
       }
       else {
         Serial.println(F("Error, NO data sent to server!"));

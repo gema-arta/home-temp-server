@@ -4,6 +4,8 @@
 #define STAPSK "bertopes"
 #endif
 
+#define SENSOR_IP 192, 168, 44, 200
+#define GATEWAY_IP 192, 168, 44, 1
 #define MAX_CONNECT_TRIES 500
 
 #include <ESP8266WiFi.h>
@@ -15,6 +17,7 @@ bool connectToWifi(double* seconds_to_join)
 {
   auto time_start = std::chrono::system_clock::now();
 
+  WiFi.config(IPAddress(SENSOR_IP), IPAddress(GATEWAY_IP), IPAddress(255, 255, 255, 0));
   WiFi.mode(WIFI_STA);
   WiFi.begin(STASSID, STAPSK);
 

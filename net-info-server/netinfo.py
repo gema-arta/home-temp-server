@@ -1,5 +1,6 @@
 import subprocess
 import os
+import time
 
 while True:
   result = subprocess.run(['speedtest-cli', '--csv'], stdout=subprocess.PIPE, text=True)

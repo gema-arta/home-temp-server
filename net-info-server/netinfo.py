@@ -24,3 +24,5 @@ while True:
     os.system(db_command)
   else:
     print("Error running 'speedtest-cli'.")
+  
+  time.sleep(60*60*3)

@@ -21,4 +21,4 @@ while True:
   print(formatted_data)
   
   os.system(formatted_data)
-  time.sleep(60*60*3)
+  time.sleep(60)

@@ -1,0 +1,47 @@
+export csv dat z influx do csv
+
+influx -precision rfc3339 -database 'home_data' -execute 'SELECT "temp" AS "Temperature", "humidity" AS "Humidity" FROM "sensors" WHERE time >= now() - 50m GROUP BY "sensor_id"' -format 'csv' > test.csv
+
+vygenerovani SVG diagramu přes gnuplot
+
+"gnuplot teploty.gnuplot" kde teploty.gnuplot je soubor v pracovnim adresari ktery obsahuje "gnuplot" skript pro vygenerovani grafu, skript ma obsah
+
+
+set term svg size 800,600 dynamic enhanced                                                 
+set output 'teplota.svg'                                                                   
+                                                                                           
+set datafile separator ','                                                                 
+                                                                                           
+set xdata time                                                                             
+set format x "%H:%M:%S"                                                                    
+set timefmt "%Y-%m-%d\T%H:%M:%S"                                                           
+                                                                                           
+set key autotitle columnhead                                                               
+set ylabel 'Temperature'                                                                   
+set xlabel 'Time'                                                                          
+                                                                                           
+set y2tics                                                                                 
+set ytics nomirror                                                                         
+set y2label 'Humidity'                                                                     
+                                                                                           
+set style line 100 lt 1 lc rgb "grey" lw 0.5 # linestyle for the grid                      
+set grid ls 100 # enable grid with specific linestyle                                      
+set ytics 2.5 # smaller ytics                                                              
+set xtics 400   # smaller xtics                                                            
+                                                                                           
+set format y "%.1f ℃"                                                                      
+set format y2 "%.0f﹪"                                                                      
+                                                                                           
+set style line 101 lw 3 lt rgb "#f62aa0" # style for targetValue (1) (pink)                
+set style line 102 lw 3 lt rgb "#26dfd0" # style for measuredValue (2) (light blue)        
+set style line 103 lw 4 lt rgb "#b8ee30" # style for secondYAxisValue (3) (limegreen)      
+                                                                                           
+set title 'Temperature'                                                                    
+                                                                                           
+set xtics rotate                                                                           
+set key right top                                                                          
+                                                                                           
+set yrange [-10:50]                                                                        
+set y2range [0:100]                                                                        
+                                                                                           
+plot 'test.csv' using 3:4 with lines ls 101, '' using 3:5 with lines ls 102 axis x1y2      

@@ -5,3 +5,6 @@ Description=IOT Internet Speed Measure
 Type=simple
 WorkingDirectory=/opt/home-temp-server/net-info-server
 ExecStart=python3 netinfo.py
+
+[Install]
+WantedBy=multi-user.target
